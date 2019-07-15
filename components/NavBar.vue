@@ -8,13 +8,13 @@
         <a
           role="button"
           class="navbar-burger"
-          @click="burgerMenuClicked()"
           :class="{ 'is-active': burgerMenuOpened }"
           style="height:auto"
+          @click="burgerMenuClicked()"
         >
-          <span></span>
-          <span></span>
-          <span></span>
+          <span />
+          <span />
+          <span />
         </a>
       </div>
       <div

@@ -4,12 +4,14 @@
     <div class="control">
       <div class="buttons has-addons">
         <span
-          class="button"
           v-for="time in times"
-          v-bind:key="time.id"
-          :disabled="time.disabled"
-          @click="selectTime(time.id)"
-          :class="{ 'is-info': selectedTimeId == time.id }"
+          v-bind:key="time.value"
+          class="button"
+          :disabled="isDisabled(time)"
+          :class="{
+            'is-info': isSelected(time)
+          }"
+          @click="selectTime(time.value)"
           >{{ time.message }}</span
         >
       </div>
@@ -18,46 +20,56 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   props: {
     labelName: String,
-    minTimeValue: Number
+    slotsKey: String
   },
-  data: function() {
-    return {
-      selectedTimeId: -1,
-      times: [
-        { id: 1, message: '5:00 P.M.', value: 17, disabled: true },
-        { id: 2, message: '6:00 P.M.', value: 18, disabled: true },
-        { id: 3, message: '7:00 P.M.', value: 19, disabled: true },
-        { id: 4, message: '8:00 P.M.', value: 20, disabled: false },
-        { id: 5, message: '9:00 P.M.', value: 21, disabled: false },
-        { id: 6, message: '10:00 P.M.', value: 22, disabled: false },
-        { id: 7, message: '11:00 P.M.', value: 23, disabled: true }
-      ]
-    }
-  },
-  created: function() {
-    this.times.forEach((time) => {
-      if (this.minTimeValue > time.value) {
-        time.disabled = true
+  computed: {
+    times() {
+      return this.slot.times
+    },
+    selectedTimeValue() {
+      return this.slot.selectedTimeValue
+    },
+    slot() {
+      return this.slots[this.slotsKey]
+    },
+    ...mapState({
+      slots: (state) => {
+        return state.event.event.slots
       }
     })
   },
   methods: {
-    getTime(id) {
-      if (id < 0) {
+    isSelected(time) {
+      const status =
+        this.selectedTimeValue === time.value && !this.isDisabled(time)
+      console.log('Status: ' + status)
+      return status
+    },
+    isDisabled(time) {
+      const params = { time: time, slotsKey: this.slotsKey }
+      return this.$store.getters['event/isDisabled'](params)
+    },
+    getTime(value) {
+      if (value < 0) {
         return -1
       }
       const time = this.times.find((time) => {
-        return time.id === id
+        return time.value === value
       })
       return time
     },
-    selectTime(id) {
-      const time = this.getTime(id)
-      if (time != null && !time.disabled) {
-        this.selectedTimeId = time.id
+    selectTime(value) {
+      const time = this.getTime(value)
+      if (time != null && !this.isDisabled(time)) {
+        const params = {
+          slotsKey: this.slotsKey,
+          selectedTimeValue: value
+        }
+        this.$store.commit('event/selectTime', params)
       }
     }
   }
