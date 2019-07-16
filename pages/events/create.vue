@@ -95,7 +95,9 @@ export default {
       return state.event.event.types.values
     },
     locationNames: (state) => {
-      return state.event.event.locations.values.map((location) => location.name)
+      return state.event.event.locations.values.map((location) => {
+        location.name
+      })
     }
   }),
   methods: {
