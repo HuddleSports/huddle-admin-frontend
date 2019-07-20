@@ -78,7 +78,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import bulmaCalendar from 'bulma-calendar'
+import bulmaCalendar from 'bulma-calendar/dist/js/bulma-calendar.js'
 import TimePicker from '~/components/TimePicker.vue'
 export default {
   components: {

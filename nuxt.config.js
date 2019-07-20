@@ -13,21 +13,19 @@ export default {
         name: 'description',
         content: process.env.npm_package_description || ''
       }
-    ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      {
-        rel: 'stylesheet',
-        href:
-          'https://cdn.jsdelivr.net/npm/bulma-calendar@6.0.7/dist/css/bulma-calendar.min.css'
-      }
-    ],
-    script: [
-      {
-        src:
-          'https://cdn.jsdelivr.net/npm/bulma-calendar@6.0.7/dist/js/bulma-calendar.min.js'
-      }
     ]
+    // link: [
+    //   { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+    //   {
+    //     rel: 'stylesheet',
+    //     href: './node_modules/bulma-calendar/dist/css/bulma-calendar.min.css'
+    //   }
+    // ],
+    // script: [
+    //   {
+    //     src: './node_modules/bulma-calendar/dist/js/bulma-calendar.min.js'
+    //   }
+    // ]
   },
   /*
    ** Customize the progress-bar color
@@ -36,14 +34,29 @@ export default {
   /*
    ** Global CSS
    */
-  css: [],
+  css: [
+    {
+      src: 'bulma-calendar/dist/css/bulma-calendar.min.css',
+      lang: 'css'
+    }
+    // {
+    //   src: 'bulma-calendar/dist/js/bulma-calendar.js',
+    //   lang: 'js'
+    // }
+  ],
+  js: [
+    // {
+    //   src: 'bulma-calendar/dist/js/bulma-calendar.js',
+    //   lang: 'js'
+    // }
+  ],
   /*
    ** Plugins to load before mounting the App
    */
   plugins: [],
   styleResources: {
     // your settings here
-    sass: [], // alternative: scss
+    sass: ['bulma-calendar'], // alternative: scss
     less: [],
     stylus: []
   },
