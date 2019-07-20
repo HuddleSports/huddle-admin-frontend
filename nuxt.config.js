@@ -14,7 +14,20 @@ export default {
         content: process.env.npm_package_description || ''
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://cdn.jsdelivr.net/npm/bulma-calendar@6.0.7/dist/css/bulma-calendar.min.css'
+      }
+    ],
+    script: [
+      {
+        src:
+          'https://cdn.jsdelivr.net/npm/bulma-calendar@6.0.7/dist/js/bulma-calendar.min.js'
+      }
+    ]
   },
   /*
    ** Customize the progress-bar color
@@ -28,6 +41,12 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [],
+  styleResources: {
+    // your settings here
+    sass: [], // alternative: scss
+    less: [],
+    stylus: []
+  },
   /*
    ** Nuxt.js modules
    */
@@ -35,7 +54,8 @@ export default {
     // Doc:https://github.com/nuxt-community/modules/tree/master/packages/bulma
     '@nuxtjs/bulma',
     // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/style-resources'
   ],
   devModules: ['@nuxtjs/eslint-module'],
   /*

@@ -9,6 +9,9 @@
             <label class="label">Name</label>
             <div class="control">
               <input class="input" type="text" placeholder="Name" />
+              <input type="date" />
+              Selected date: {{ niceDate }}
+              <button ref="calendarTrigger" type="button">Change</button>
             </div>
           </div>
           <div class="field">
@@ -75,31 +78,40 @@
 
 <script>
 import { mapState } from 'vuex'
+import bulmaCalendar from 'bulma-calendar'
 import TimePicker from '~/components/TimePicker.vue'
 export default {
   components: {
     TimePicker
   },
-  computed: mapState({
-    event: (state) => {
-      return state.event.event
+  computed: {
+    niceDate() {
+      if (this.date) {
+        return this.date.toLocaleDateString()
+      }
+      return '2019'
     },
-    title: (state) => {
-      return state.event.event.name
-    },
-    slots: (state) => {
-      const key = 'start'
-      return state.event.event.slots[key]
-    },
-    typeValues: (state) => {
-      return state.event.event.types.values
-    },
-    locationNames: (state) => {
-      return state.event.event.locations.values.map((location) => {
-        location.name
-      })
-    }
-  }),
+    ...mapState({
+      event: (state) => {
+        return state.event.event
+      },
+      title: (state) => {
+        return state.event.event.name
+      },
+      slots: (state) => {
+        const key = 'start'
+        return state.event.event.slots[key]
+      },
+      typeValues: (state) => {
+        return state.event.event.types.values
+      },
+      locationNames: (state) => {
+        return state.event.event.locations.values.map((location) => {
+          return location.name
+        })
+      }
+    })
+  },
   methods: {
     eventTypeChanged() {
       if (this.selectedEventType !== '' && this.selectedEventType != null) {
@@ -124,8 +136,21 @@ export default {
   data: function() {
     return {
       selectedEventType: '',
-      selectedLocationName: ''
+      selectedLocationName: '',
+      date: new Date()
     }
+  },
+  mounted() {
+    // const calendarTrigger = this.$refs.calendarTrigger
+    // console.log(calendarTrigger)
+    debugger
+    const calendar = bulmaCalendar.attach(this.$refs.calendarTrigger, {
+      startDate: this.date
+    })[0]
+    calendar.on('date:selected', (e) => {
+      return (this.date = e.start || null)
+    })
+    // debugger
   }
 }
 </script>
