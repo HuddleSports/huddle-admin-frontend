@@ -56,7 +56,7 @@ export default {
   plugins: [],
   styleResources: {
     // your settings here
-    sass: ['bulma-calendar'], // alternative: scss
+    // sass: ['~/bulma-calendar/src/sass/index.sass'], // alternative: scss
     less: [],
     stylus: []
   },
