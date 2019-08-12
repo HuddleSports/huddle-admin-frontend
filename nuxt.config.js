@@ -13,19 +13,8 @@ export default {
         name: 'description',
         content: process.env.npm_package_description || ''
       }
-    ]
-    // link: [
-    //   { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-    //   {
-    //     rel: 'stylesheet',
-    //     href: './node_modules/bulma-calendar/dist/css/bulma-calendar.min.css'
-    //   }
-    // ],
-    // script: [
-    //   {
-    //     src: './node_modules/bulma-calendar/dist/js/bulma-calendar.min.js'
-    //   }
-    // ]
+    ],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
   /*
    ** Customize the progress-bar color
@@ -39,10 +28,6 @@ export default {
       src: 'bulma-calendar/dist/css/bulma-calendar.min.css',
       lang: 'css'
     }
-    // {
-    //   src: 'bulma-calendar/dist/js/bulma-calendar.js',
-    //   lang: 'js'
-    // }
   ],
   js: [
     // {
@@ -54,12 +39,6 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [],
-  styleResources: {
-    // your settings here
-    // sass: ['~/bulma-calendar/src/sass/index.sass'], // alternative: scss
-    less: [],
-    stylus: []
-  },
   /*
    ** Nuxt.js modules
    */

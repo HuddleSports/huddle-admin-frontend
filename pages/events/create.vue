@@ -9,9 +9,6 @@
             <label class="label">Name</label>
             <div class="control">
               <input class="input" type="text" placeholder="Name" />
-              <input type="date" />
-              Selected date: {{ niceDate }}
-              <button ref="calendarTrigger" type="button">Change</button>
             </div>
           </div>
           <div class="field">
@@ -33,11 +30,17 @@
             </div>
           </div>
           <div class="field">
+            <label class="label">Time</label>
+            <div class="control">
+              <button ref="calendarTrigger" type="date" />
+            </div>
+          </div>
+          <!-- <div class="field">
             <TimePicker :labelName="'Start Time'" :slotsKey="'start'" />
           </div>
           <div class="field">
             <TimePicker :labelName="'End Time'" :slotsKey="'end'" />
-          </div>
+          </div> -->
 
           <div class="columns">
             <div class="column">
@@ -79,18 +82,12 @@
 <script>
 import { mapState } from 'vuex'
 import bulmaCalendar from 'bulma-calendar/dist/js/bulma-calendar.js'
-import TimePicker from '~/components/TimePicker.vue'
+// import TimePicker from '~/components/TimePicker.vue'
 export default {
   components: {
-    TimePicker
+    // TimePicker
   },
   computed: {
-    niceDate() {
-      if (this.date) {
-        return this.date.toLocaleDateString()
-      }
-      return '2019'
-    },
     ...mapState({
       event: (state) => {
         return state.event.event
@@ -141,8 +138,6 @@ export default {
     }
   },
   mounted() {
-    // const calendarTrigger = this.$refs.calendarTrigger
-    // console.log(calendarTrigger)
     debugger
     const calendar = bulmaCalendar.attach(this.$refs.calendarTrigger, {
       startDate: this.date
@@ -150,7 +145,6 @@ export default {
     calendar.on('date:selected', (e) => {
       return (this.date = e.start || null)
     })
-    // debugger
   }
 }
 </script>
