@@ -8,51 +8,37 @@
           <div class="field">
             <label class="label">Name</label>
             <div class="control">
-              <input class="input" type="text" placeholder="Name" />
+              <input
+                class="input"
+                type="text"
+                placeholder="Name"
+                v-model="name"
+              />
             </div>
           </div>
           <div class="field">
             <label class="label">Location</label>
             <div class="control">
               <div class="select">
-                <select
-                  @change="locationChanged()"
-                  v-model="selectedLocationName"
-                >
-                  <option disabled value="">Please select one</option>
+                <select v-model="locationName">
+                  <option disabled value="null">Please select one</option>
                   <option
-                    v-for="locationName in locationNames"
-                    v-bind:key="locationName"
-                    >{{ locationName }}</option
+                    v-for="locationNameOption in locationNames"
+                    v-bind:key="locationNameOption"
+                    >{{ locationNameOption }}</option
                   >
                 </select>
               </div>
             </div>
           </div>
-          <div class="field">
-            <label class="label">Time</label>
-            <div class="control">
-              <button ref="calendarTrigger" type="date" />
-            </div>
-          </div>
-          <!-- <div class="field">
-            <TimePicker :labelName="'Start Time'" :slotsKey="'start'" />
-          </div>
-          <div class="field">
-            <TimePicker :labelName="'End Time'" :slotsKey="'end'" />
-          </div> -->
-
           <div class="columns">
             <div class="column">
               <div class="field">
                 <label class="label">Sport Type</label>
                 <div class="control">
                   <div class="select">
-                    <select
-                      @change="eventTypeChanged()"
-                      v-model="selectedEventType"
-                    >
-                      <option disabled value="">Please select one</option>
+                    <select v-model="sportType">
+                      <option disabled value="null">Please select one</option>
                       <option
                         v-for="typeValue in typeValues"
                         v-bind:key="typeValue"
@@ -67,10 +53,41 @@
               <div class="field">
                 <label class="label">Price</label>
                 <div class="control">
-                  <input class="input" type="number" placeholder="Price" />
+                  <input
+                    class="input"
+                    type="number"
+                    v-model="price"
+                    placeholder="Price"
+                  />
                 </div>
               </div>
             </div>
+          </div>
+          <div class="field">
+            <label class="label">Time</label>
+            <div class="control">
+              <button
+                ref="calendarTrigger"
+                type="datetime"
+                data-is-range="true"
+                data-close-on-select="true"
+                data-minute-steps="30"
+              />
+            </div>
+            <p
+              class="help is-danger is-medium is-size-6"
+              v-show="shouldShowInvalidTimeRangeError"
+            >
+              Event time is invalid!
+            </p>
+          </div>
+          <div class="column has-text-centered">
+            <a
+              class="button is-link"
+              :disabled="isSubmitDisabled()"
+              @click="submitEvent()"
+              >Submit</a
+            >
           </div>
         </div>
       </div>
@@ -82,68 +99,117 @@
 <script>
 import { mapState } from 'vuex'
 import bulmaCalendar from 'bulma-calendar/dist/js/bulma-calendar.js'
-// import TimePicker from '~/components/TimePicker.vue'
 export default {
-  components: {
-    // TimePicker
-  },
+  components: {},
   computed: {
     ...mapState({
       event: (state) => {
         return state.event.event
-      },
-      title: (state) => {
-        return state.event.event.name
-      },
-      slots: (state) => {
-        const key = 'start'
-        return state.event.event.slots[key]
-      },
-      typeValues: (state) => {
-        return state.event.event.types.values
-      },
-      locationNames: (state) => {
-        return state.event.event.locations.values.map((location) => {
-          return location.name
-        })
       }
-    })
-  },
-  methods: {
-    eventTypeChanged() {
-      if (this.selectedEventType !== '' && this.selectedEventType != null) {
+    }),
+    name: {
+      get() {
+        return this.event.name
+      },
+      set(name) {
         const params = {
-          selectedTypeValue: this.selectedEventType
+          name: name
+        }
+        this.$store.commit('event/setName', params)
+      }
+    },
+    locationName: {
+      get() {
+        return this.event.locations.selectedName
+      },
+      set(locationName) {
+        const params = {
+          selectedLocationName: locationName
+        }
+        this.$store.commit('event/selectLocation', params)
+      }
+    },
+    sportType: {
+      get() {
+        return this.event.types.selectedValue
+      },
+      set(sportType) {
+        const params = {
+          selectedTypeValue: sportType
         }
         this.$store.commit('event/selectType', params)
       }
     },
-    locationChanged() {
-      if (
-        this.selectedLocationName !== '' &&
-        this.selectedLocationName != null
-      ) {
+    price: {
+      get() {
+        return this.event.price
+      },
+      set(price) {
         const params = {
-          selectedLocationName: this.selectedLocationName
+          price: price
         }
-        this.$store.commit('event/selectLocation', params)
+        this.$store.commit('event/setPrice', params)
+      }
+    },
+    typeValues() {
+      return this.event.types.values
+    },
+    locationNames() {
+      return this.event.locations.values.map((location) => {
+        return location.name
+      })
+    }
+  },
+  methods: {
+    isSubmitDisabled() {
+      const status = !this.$store.getters['event/isEventValid']()
+      console.log('isSubmitDisabled: ' + status)
+      return status
+    },
+    isTimeRangeValid(startTime, endTime) {
+      if (startTime == null || endTime == null) {
+        return true
+      }
+      if (endTime <= startTime) {
+        return false
+      }
+      return true
+    },
+    submitEvent(event) {
+      console.log('Event submitted')
+      this.$store.commit('event/submitEvent')
+      this.resetTimeRange()
+    },
+    resetTimeRange() {
+      if (this.calendar) {
+        this.calendar.clear()
       }
     }
   },
   data: function() {
     return {
-      selectedEventType: '',
-      selectedLocationName: '',
-      date: new Date()
+      shouldShowInvalidTimeRangeError: true,
+      calendar: null
     }
   },
   mounted() {
-    debugger
-    const calendar = bulmaCalendar.attach(this.$refs.calendarTrigger, {
-      startDate: this.date
-    })[0]
-    calendar.on('date:selected', (e) => {
-      return (this.date = e.start || null)
+    this.calendar = bulmaCalendar.attach(this.$refs.calendarTrigger, {})[0]
+    this.calendar.on('select', (bulmaCalendar) => {
+      const startTime = bulmaCalendar.data.startTime.getTime()
+      const endTime = bulmaCalendar.data.endTime.getTime()
+      this.shouldShowInvalidTimeRangeError = !this.isTimeRangeValid(
+        startTime,
+        endTime
+      )
+      if (!this.shouldShowInvalidTimeRangeError) {
+        const params = {
+          startTime: startTime,
+          endTime: endTime
+        }
+        this.$store.commit('event/setTimeRange', params)
+      } else {
+        this.$store.commit('event/resetTimeRange')
+      }
     })
   }
 }

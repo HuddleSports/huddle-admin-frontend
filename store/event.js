@@ -1,68 +1,6 @@
 export const state = () => ({
   event: {
-    name: '',
-    slots: {
-      start: {
-        selectedTimeValue: null,
-        minValueAllowed: 0,
-        times: [
-          { message: '12:00 A.M.', value: 0, allowed: true },
-          { message: '1:00 A.M.', value: 1, allowed: false },
-          { message: '2:00 A.M.', value: 2, allowed: false },
-          { message: '3:00 A.M.', value: 3, allowed: false },
-          { message: '4:00 A.M.', value: 4, allowed: true },
-          { message: '5:00 A.M.', value: 5, allowed: true },
-          { message: '6:00 A.M.', value: 6, allowed: true },
-          { message: '7:00 A.M.', value: 7, allowed: true },
-          { message: '8:00 A.M.', value: 8, allowed: false },
-          { message: '9:00 A.M.', value: 9, allowed: true },
-          { message: '10:00 A.M.', value: 10, allowed: false },
-          { message: '11:00 A.M.', value: 11, allowed: false },
-          { message: '12:00 P.M.', value: 12, allowed: true },
-          { message: '1:00 P.M.', value: 13, allowed: true },
-          { message: '2:00 P.M.', value: 14, allowed: true },
-          { message: '3:00 P.M.', value: 15, allowed: true },
-          { message: '4:00 P.M.', value: 16, allowed: true },
-          { message: '5:00 P.M.', value: 17, allowed: true },
-          { message: '6:00 P.M.', value: 18, allowed: true },
-          { message: '7:00 P.M.', value: 19, allowed: true },
-          { message: '8:00 P.M.', value: 20, allowed: true },
-          { message: '9:00 P.M.', value: 21, allowed: true },
-          { message: '10:00 P.M.', value: 22, allowed: true },
-          { message: '11:00 P.M.', value: 23, allowed: true }
-        ]
-      },
-      end: {
-        selectedTimeValue: null,
-        minValueAllowed: 0,
-        times: [
-          { message: '12:00 A.M.', value: 0, allowed: true },
-          { message: '1:00 A.M.', value: 1, allowed: true },
-          { message: '2:00 A.M.', value: 2, allowed: true },
-          { message: '3:00 A.M.', value: 3, allowed: true },
-          { message: '4:00 A.M.', value: 4, allowed: true },
-          { message: '5:00 A.M.', value: 5, allowed: true },
-          { message: '6:00 A.M.', value: 6, allowed: true },
-          { message: '7:00 A.M.', value: 7, allowed: true },
-          { message: '8:00 A.M.', value: 8, allowed: true },
-          { message: '9:00 A.M.', value: 9, allowed: true },
-          { message: '10:00 A.M.', value: 10, allowed: true },
-          { message: '11:00 A.M.', value: 11, allowed: true },
-          { message: '12:00 P.M.', value: 12, allowed: true },
-          { message: '1:00 P.M.', value: 13, allowed: true },
-          { message: '2:00 P.M.', value: 14, allowed: true },
-          { message: '3:00 P.M.', value: 15, allowed: true },
-          { message: '4:00 P.M.', value: 16, allowed: true },
-          { message: '5:00 P.M.', value: 17, allowed: true },
-          { message: '6:00 P.M.', value: 18, allowed: true },
-          { message: '7:00 P.M.', value: 19, allowed: true },
-          { message: '8:00 P.M.', value: 20, allowed: true },
-          { message: '9:00 P.M.', value: 21, allowed: true },
-          { message: '10:00 P.M.', value: 22, allowed: true },
-          { message: '11:00 P.M.', value: 23, allowed: true }
-        ]
-      }
-    },
+    name: null,
     types: {
       selectedValue: null,
       values: ['Cricket', 'Football']
@@ -96,47 +34,59 @@ export const state = () => ({
           state: 'Gujarat'
         }
       ]
-    }
+    },
+    price: null,
+    startTime: null,
+    endTime: null
   }
 })
 
 export const getters = {
-  isDisabled(state) {
-    return (params) => {
-      if (params.slotsKey === 'start') {
-        return !params.time.allowed
-      } else {
-        return (
-          state.event.slots.start.selectedTimeValue >= params.time.value ||
-          !params.time.allowed
-        )
+  isEventValid(state) {
+    return () => {
+      if (
+        state.event.name == null ||
+        state.event.name.trim() === '' ||
+        state.event.price == null ||
+        state.event.startTime == null ||
+        state.event.endTime == null ||
+        state.event.types.selectedValue == null ||
+        state.event.locations.selectedName == null
+      ) {
+        return false
       }
+      return true
     }
   }
 }
 
 export const mutations = {
-  selectTime(state, params) {
-    state.event.slots[params.slotsKey].selectedTimeValue =
-      params.selectedTimeValue
-    if (params.slotsKey === 'start') {
-      state.event.slots.end.minValueAllowed = params.selectedTimeValue
-    }
+  setTimeRange(state, params) {
+    state.event.startTime = params.startTime
+    state.event.endTime = params.endTime
+  },
+  resetTimeRange(state) {
+    state.event.startTime = null
+    state.event.endTime = null
   },
   selectType(state, params) {
-    if (
-      params.selectedTypeValue != null &&
-      state.event.types.values.includes(params.selectedTypeValue)
-    ) {
-      state.event.types.selectedValue = params.selectedTypeValue
-    }
+    state.event.types.selectedValue = params.selectedTypeValue
   },
   selectLocation(state, params) {
-    if (
-      params.selectedLocationName != null &&
-      params.selectedLocationName !== ''
-    ) {
-      state.event.locations.selectedName = params.selectedLocationName
-    }
+    state.event.locations.selectedName = params.selectedLocationName
+  },
+  setName(state, params) {
+    state.event.name = params.name
+  },
+  setPrice(state, params) {
+    state.event.price = params.price
+  },
+  submitEvent(state) {
+    state.event.name = null
+    state.event.price = null
+    state.event.startTime = null
+    state.event.endTime = null
+    state.event.locations.selectedName = null
+    state.event.types.selectedValue = null
   }
 }
