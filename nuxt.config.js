@@ -23,7 +23,18 @@ export default {
   /*
    ** Global CSS
    */
-  css: [],
+  css: [
+    {
+      src: 'bulma-calendar/dist/css/bulma-calendar.min.css',
+      lang: 'css'
+    }
+  ],
+  js: [
+    // {
+    //   src: 'bulma-calendar/dist/js/bulma-calendar.js',
+    //   lang: 'js'
+    // }
+  ],
   /*
    ** Plugins to load before mounting the App
    */
@@ -36,8 +47,9 @@ export default {
     '@nuxtjs/bulma',
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/eslint-module'
+    '@nuxtjs/style-resources'
   ],
+  devModules: ['@nuxtjs/eslint-module'],
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
